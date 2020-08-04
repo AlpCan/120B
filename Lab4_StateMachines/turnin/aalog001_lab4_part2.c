@@ -76,7 +76,7 @@ void tick (){
 		case decWait:
 			break;
 		case reset:
-			counter = 7;
+			counter = 0;
 			break;
 	}
 	PORTC = counter;

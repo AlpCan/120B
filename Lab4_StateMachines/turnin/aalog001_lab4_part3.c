@@ -12,7 +12,7 @@
 #include "simAVRHeader.h"
 #endif
 
-enum States {start, lock, waitUnlock, unlock} state;
+enum States {start, lock, waitUnlock, waitReleaseUnlock, waitReleaseLock, unlock} state;
 // States are named relative to PB0
 void tick (){
 	unsigned char buttonX = PINA & 0x01;
@@ -29,10 +29,18 @@ void tick (){
 			break;
 		case waitUnlock:
 			state = (buttonY) ? unlock :
-				(buttonHash) ? waitUnlock :
-			        (buttonX || buttonIn ) ? lock :
-				waitUnlock;
+				(buttonHash) ? waitReleaseUnlock :
+			       	(buttonIn || buttonX) ? lock : waitUnlock;
 			break;
+		case waitReleaseUnlock:
+			state = (buttonHash) ? waitReleaseUnlock :
+				(!buttonHash && !buttonY && !buttonX) ? waitUnlock :
+				(!buttonHash && (buttonY || buttonX)) ? waitReleaseLock : lock;
+			break;
+		case waitReleaseLock:
+			state = (buttonY || buttonX) ? waitReleaseLock:
+				(!buttonHash && !buttonY && !buttonX) ? lock : lock;
+		       break;	
 		case unlock:
 			state = (buttonIn) ? lock : unlock;
 			break;
@@ -47,6 +55,10 @@ void tick (){
 			bolt = 0;
 			break;
 		case waitUnlock:
+			break;
+		case waitReleaseUnlock:
+			break;
+		case waitReleaseLock:
 			break;
 		case unlock:
 			bolt = 1;

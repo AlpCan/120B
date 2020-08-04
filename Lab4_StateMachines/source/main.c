@@ -12,7 +12,7 @@
 #include "simAVRHeader.h"
 #endif
 
-enum States {start, lock, waitUnlock, waitReleaseUnlock , unlock, waitLock, waitReleaseLock} state;
+enum States {start, lock, waitUnlock, waitReleaseUnlock, waitReleaseLock, unlock} state;
 // States are named relative to PB0
 void tick (){
 	unsigned char buttonX = PINA & 0x01;
@@ -20,8 +20,6 @@ void tick (){
 	unsigned char buttonHash = (PINA & 0x04);
 	unsigned char buttonIn = (PINA & 0x80);
 	static unsigned char bolt = 0;
-	static unsigned char countPass = 0;
-	const unsigned char password[3] = {0x01,0x02,0x01};
 	switch(state){
 		case start:
 			state = lock;
@@ -30,118 +28,21 @@ void tick (){
 			state = (buttonHash) ? waitUnlock : lock;
 			break;
 		case waitUnlock:
-			if ( buttonIn ) {
-				state = lock;
-			}
-			else if (buttonY) {
-				if(countPass<3) {
-					if(password[countPass] == buttonY) {
-					        if(countPass == 2){
-							state = unlock;
-						} 
-						else {
-							state = waitReleaseUnlock;
-						}
-						countPass = countPass + 1;
-					}
-			 		else {
-						state = lock;
-					}		
-				}
-				else {
-					state = lock;
-				}
-			}
-			else if(buttonX) {
-				if(countPass<3) {
-					if(password[countPass] == buttonX) {
-					        if(countPass == 2){
-							state = unlock;
-						} 
-						else {
-							state = waitReleaseUnlock;
-						}
-						countPass = countPass + 1;
-					}
-			 		else {
-						state = lock;
-					}		
-				}
-				else {
-					state = lock;
-				}
-	
-			} 
-			else if (buttonHash) {
-				state = waitReleaseUnlock;
-			}
-			else {
-				state = waitUnlock;
-			}
-	 		break;
-		case waitReleaseUnlock:
-			if (!buttonY && !buttonX && !buttonHash ) {
-				state = waitUnlock;
-			}
-			break;	
-		case unlock:
-			state = (buttonIn) ? lock :
-			       	(buttonHash) ? waitLock : unlock;
+			state = (buttonY) ? unlock :
+				(buttonHash) ? waitReleaseUnlock :
+			       	(buttonIn || buttonX) ? lock : waitUnlock;
 			break;
-		case waitLock:
-			if ( buttonIn ) {
-				state = lock;
-			}
-			else if (buttonY) {
-				if(countPass<3) {
-					if(password[countPass] == buttonY) {
-					        if(countPass == 2){
-							state = lock;
-						} 
-						else {
-							state = waitReleaseLock;
-						}
-						countPass = countPass + 1;
-					}
-			 		else {
-						state = unlock;
-					}		
-				}
-				else {
-					state = unlock;
-				}
-			}
-			else if(buttonX) {
-				if(countPass<3) {
-					if(password[countPass] == buttonX) {
-					        if(countPass == 2){
-							state = lock;
-						} 
-						else {
-							state = waitReleaseLock;
-						}
-						countPass = countPass + 1;				
-					}
-			 		else {
-						state = unlock;
-					}		
-				}
-				else {
-					state = unlock;
-				}
-	
-			} 
-			else if (buttonHash) {
-				state = waitReleaseLock;
-			}
-			else {
-				state = waitLock;
-			}
+		case waitReleaseUnlock:
+			state = (buttonHash) ? waitReleaseUnlock :
+				(!buttonHash && !buttonY && !buttonX) ? waitUnlock :
+				(!buttonHash && (buttonY || buttonX)) ? waitReleaseLock : lock;
 			break;
 		case waitReleaseLock:
-			if (!buttonY && !buttonX && !buttonHash ) {
-				state = waitLock;
-			}
+			state = (buttonY || buttonX) ? waitReleaseLock:
+				(!buttonHash && !buttonY && !buttonX) ? lock : lock;
+		       break;	
+		case unlock:
+			state = (buttonIn) ? lock : unlock;
 			break;
 		default:
 			state = start;
@@ -151,25 +52,21 @@ void tick (){
 		case start:
 			break;
 		case lock:
-			//countPass = 0;
 			bolt = 0;
 			break;
 		case waitUnlock:
 			break;
 		case waitReleaseUnlock:
 			break;
-		case unlock:
-			countPass = 0;
-			bolt = 1;
-			break;
-		case waitLock:
-			break;
 		case waitReleaseLock:
+			break;
+		case unlock:
+			bolt = 1;
 			break;
 
 	}
 	PORTB = bolt;
-	PORTC = countPass;
+	PORTC = buttonIn;
 }
 int main(void) {
 	/* Insert DDR and PORT initializations */
