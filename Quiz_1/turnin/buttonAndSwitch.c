@@ -21,6 +21,7 @@ int main() {
 		swiA7 = (PINA & 0x80) >> 7;
 		// 2) logic
 		result = ( butA0 & swiA7 ) ? 0xFF : 0x00;
+		// alternative (PINA&0x81)==0x81
 		// 3) Output
 		PORTB = result;
 	}
