@@ -15,17 +15,17 @@
 # that they are not ran in isolation but in the order shown and the state of the device is not reset or 
 # altered in between executions (unless preconditions are used).
 tests = [ {'description': 'This test will run first.',
-    'steps': [  {'inputs': [('PINA',0x00)], 'time':1000, 'expected': [('PORTB',0x01)] },
-                {'inputs': [('PINA',0x00)], 'time':1000, 'expected': [('PORTB',0x02)] },
-                {'inputs': [('PINA',0x00)], 'time':1000, 'expected': [('PORTB',0x04)] },
-                {'inputs': [('PINA',0x01)], 'time':1000, 'expected': [('PORTB',0x04)] },
-                {'inputs': [('PINA',0x00)], 'time':1000, 'expected': [('PORTB',0x02)] }, 
-                {'inputs': [('PINA',0x00)], 'time':1000, 'expected': [('PORTB',0x01)] },
-                {'inputs': [('PINA',0x01)], 'time':1000, 'expected': [('PORTB',0x01)] },
-                {'inputs': [('PINA',0x00)], 'time':1000, 'expected': [('PORTB',0x02)] },
-                {'inputs': [('PINA',0x01)], 'time':1000, 'expected': [('PORTB',0x02)] },
-                {'inputs': [('PINA',0x00)], 'time':1000, 'expected': [('PORTB',0x04)] },
-                {'inputs': [('PINA',0x00)], 'time':500, 'expected': [('PORTB',0x02)] }
+    'steps': [  {'inputs': [('PINA',0x00)], 'time':300, 'expected': [('PORTB',0x01)] },
+                {'inputs': [('PINA',0x00)], 'time':300, 'expected': [('PORTB',0x02)] },
+                {'inputs': [('PINA',0x00)], 'time':300, 'expected': [('PORTB',0x04)] },
+                {'inputs': [('PINA',0x01)], 'time':300, 'expected': [('PORTB',0x04)] },
+                {'inputs': [('PINA',0x00)], 'time':300, 'expected': [('PORTB',0x02)] }, 
+                {'inputs': [('PINA',0x00)], 'time':300, 'expected': [('PORTB',0x01)] },
+                {'inputs': [('PINA',0x01)], 'time':300, 'expected': [('PORTB',0x01)] },
+                {'inputs': [('PINA',0x00)], 'time':300, 'expected': [('PORTB',0x02)] },
+                {'inputs': [('PINA',0x01)], 'time':300, 'expected': [('PORTB',0x02)] },
+                {'inputs': [('PINA',0x00)], 'time':300, 'expected': [('PORTB',0x04)] },
+                {'inputs': [('PINA',0x00)], 'time':300, 'expected': [('PORTB',0x02)] }
 
                 ,#{'inputs': [('PINA',0x00)], 'time': 1000, 'expected': [('PORTB',0x02)] },
                 #{'inputs': [('PINA',0x00)], 'time': 1000, 'expected': [('PORTB',0x04)] },

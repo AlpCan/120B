@@ -137,7 +137,7 @@ int main(void) {
 	PORTB = 0x00;	// Init port B to 0s
 	DDRA = 0x00;	// Set pot A to input
 	PORTA = 0xFF;	// Init port A to 1s
-	TimerSet(1000);
+	TimerSet(300);
 	TimerOn();
 	state = start;	
 	/* Insert your solution below */
