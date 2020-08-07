@@ -72,7 +72,7 @@ void TimerSet(unsigned long M) {
 //State Mashine
 //States
 
-enum States {start, ledB0, waitLedB0, ledB1, waitLedB1, ledB2, waitLedB2 } state;
+enum States {start, ledB0, waitRelLedB0, waitLedB0, waitRelContB0, ledB1, waitRelLedB1, waitLedB1,  waitRelContB1, ledB2, waitRelLedB2, waitLedB2, waitRelContB2} state;
 void Tick() {
 	unsigned char button = PINA & 0x01;
 	static unsigned char pos = 0; //position of led 0 - 1 - 2 - 4 - 0 is b0 - b1 - b2 - b1 -b0
@@ -82,25 +82,109 @@ void Tick() {
 			state = ledB0;
 			break;
 		case ledB0:
-			state = (button) ? waitLedB0 : ledB1;
+			if(button) { 
+				state = waitRelLedB0;
+			} 
+			else {
+			       state = ledB1;
+			       ++pos;
+			}
+			break;
+		case waitRelLedB0:
+			if(button) { 
+				state = waitRelLedB0;
+			} 
+			else {
+			       state = waitLedB0;
+			}
 			break;
 		case waitLedB0:
-			state = (button) ? waitLedB0 : ledB1;
+			if(button) {
+				state = waitRelContB0;
+			}
+			else {
+				state = waitLedB0;
+			}
+			break;
+		case waitRelContB0:
+			if(button) { 
+				state = waitRelContB0;
+			} 
+			else {
+			       state = ledB1;
+				++pos;
+			}
 			break;
 		case ledB1:
-			state = (button) ? waitLedB1 :
-			       	(pos >1) ? ledB0 : ledB2;
+			if(button) {
+				state = waitRelLedB1;
+			} 
+			else if (pos > 1) {
+				state = ledB0;
+			} 
+			else {
+				state = ledB2;
+				++pos;
+			}
 			break;
+		case waitRelLedB1:
+			if(button) { 
+				state = waitRelLedB1;
+			} 
+			else {
+			       state = waitLedB1;
+			}
+			break;		
 		case waitLedB1:
-			state = (button) ? waitLedB1 :
-				(!button && pos >1) ? ledB0
-				: ledB2;
+			if(button) {
+				state = waitRelContB1;
+			}
+			else {
+				state = waitLedB1;
+			}
+			break;
+		case waitRelContB1:
+			if(button) { 
+				state = waitRelContB1;
+			} 
+			else {
+			       state = ledB2;
+				++pos;
+			}
 			break;
 		case ledB2:
-			state = (button) ? waitLedB2 : ledB1;
+			if (button) {
+				state = waitRelLedB2;
+			} 
+			else {
+				state = ledB1;
+				++pos;
+			}
+			break;
+		case waitRelLedB2:
+			if(button) { 
+				state = waitRelLedB2;
+			} 
+			else {
+			       state = waitLedB2;
+			}
 			break;
 		case waitLedB2:
-			state = (button) ? waitLedB2 : ledB1;
+			if(button) {
+				state = waitRelContB2;
+			}
+			else {
+				state = waitLedB2;
+			}
+			break;
+		case waitRelContB2:
+			if(button) { 
+				state = waitRelContB2;
+			} 
+			else {
+			       state = ledB1;
+				++pos;
+			}
 			break;
 		default:
 			state = start;
@@ -113,20 +197,24 @@ void Tick() {
 			pos = 0;
 			led = 0x01;
 			break;
+		case waitRelLedB0:
+			break;
 		case waitLedB0:
 			break;
 		case ledB1:
-			++pos;
 			led = 0x02;
+			break;
+		case waitRelLedB1:
 			break;
 		case waitLedB1:
 			break;
 		case ledB2:
-			++pos;
 			led = 0x04;
 			break;
+		case waitRelLedB2:
+			break;
 		case waitLedB2:
-			break;	
+			break;
 	}
 	PORTB = led;
 

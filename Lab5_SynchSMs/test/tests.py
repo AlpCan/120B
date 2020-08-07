@@ -14,21 +14,27 @@
 # An example set of tests is shown below. It is important to note that these tests are not "unit tests" in 
 # that they are not ran in isolation but in the order shown and the state of the device is not reset or 
 # altered in between executions (unless preconditions are used).
-tests = [ {'description': 'This test will run first.',
-    'steps': [  {'inputs': [('PINA',0x00)], 'time':200, 'expected': [('PORTB',0x07)] },
-                {'inputs': [('PINA',0x01)], 'time':100, 'expected': [('PORTB',0x08)] },
-                {'inputs': [('PINA',0x02)], 'time':100, 'expected': [('PORTB',0x07)] },
-                {'inputs': [('PINA',0x00)], 'time':100, 'expected': [('PORTB',0x07)] }, 
-                {'inputs': [('PINA',0x02)], 'time':1100, 'expected': [('PORTB',0x05)] },
-                {'inputs': [('PINA',0x00)], 'time':400, 'expected': [('PORTB',0x05)] },
-                {'inputs': [('PINA',0x03)], 'time':100, 'expected': [('PORTB',0x00)] }, 
-                {'inputs': [('PINA',0x01)], 'time':2100, 'expected': [('PORTB',0x03)] },
-                {'inputs': [('PINA',0x02)], 'time':100, 'expected': [('PORTB',0x02)] },
-                {'inputs': [('PINA',0x01)], 'time':500, 'expected': [('PORTB',0x03)] }
+tests = [ {'description': 'continuous test.',
+    'steps': [  {'inputs': [('PINA',0x00)], 'time':300, 'expected': [('PORTB',0x01)] },
+                {'inputs': [('PINA',0x01)], 'time': 300, 'expected': [('PORTB',0x01)] },
+                {'inputs': [('PINA',0x01)], 'time': 300, 'expected': [('PORTB',0x01)] },
+                {'inputs': [('PINA',0x00)], 'iterations':2, 'expected': [('PORTB',0x01)] },
+                {'inputs': [('PINA',0x01)], 'iterations':2, 'expected': [('PORTB',0x01)] },
+                {'inputs': [('PINA',0x00)], 'time':300, 'expected': [('PORTB',0x02)] },
+                {'inputs': [('PINA',0x00)], 'time':300, 'expected': [('PORTB',0x04)] },
+                {'inputs': [('PINA',0x00)], 'time':300, 'expected': [('PORTB',0x02)] },
                 ],
-    'expected': [('PORTB',0x03)],
+    'expected': [('PORTB',0x02)], },
+    {'description': 'Press (1 iteration) and release PA0, wait 600 ms => PB2',
+    'steps': [  {'inputs': [('PINA',0x00)], 'time':300, 'expected': [('PORTB',0x01)] },
+                {'inputs': [('PINA',0x01)], 'iterations': 1, 'expected': [('PORTB',0x01)] },
+                {'inputs': [('PINA',0x00)], 'iterations': 1, 'expected': [('PORTB',0x01)] },
+                {'inputs': [('PINA',0x01)], 'iterations': 1, 'expected': [('PORTB',0x01)] },
+                {'inputs': [('PINA',0x00)], 'time':600, 'expected': [('PORTB',0x04)] }, 
+                ],
+    'expected': [('PORTB',0x04)], 
+    }
 
-    },
     #{'description': 'This test will run second.',
     #'steps': [ {'inputs': [('PIN', <val>)],'iterations': 1}, # Set PIN to val then run one iteration
     #   {'inputs': [('PIN',<val>)], 'time': 300 }, # Set PIN to val then run 300 ms
@@ -41,5 +47,5 @@ tests = [ {'description': 'This test will run first.',
 # Optionally you can add a set of "watch" variables these need to be global or static and may need
 # to be scoped at the function level (for static variables) if there are naming conflicts. The 
 # variables listed here will display everytime you hit (and stop at) a breakpoint
-watch = ['PORTB']
+watch = ['main::state','PINA','PORTB']
 

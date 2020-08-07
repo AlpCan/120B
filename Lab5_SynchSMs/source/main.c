@@ -72,97 +72,166 @@ void TimerSet(unsigned long M) {
 //State Mashine
 //States
 
-enum States {start, rest, increment, incWait, decrement, decWait, reset} state;
-// States are named relative to PB0
-void Tick (){
-	unsigned char button1 = PINA & 0x01;
-	unsigned char button2 = ( PINA & 0x02 ) >> 1;
-	static unsigned char counter = 7;
-	static unsigned char timeCnt = 0;
-	switch(state){
+enum States {start, ledB0, waitRelLedB0, waitLedB0, waitRelContB0, ledB1, waitRelLedB1, waitLedB1,  waitRelContB1, ledB2, waitRelLedB2, waitLedB2, waitRelContB2} state;
+void Tick() {
+	unsigned char button = ~PINA & 0x01;
+	static unsigned char pos = 0; //position of led 0 - 1 - 2 - 4 - 0 is b0 - b1 - b2 - b1 -b0
+	static unsigned char led = 0;
+	switch(state) {
 		case start:
-			state = rest;
+			state = ledB0;
 			break;
-		case rest:
-			state = ( !button1 && !button2 ) ? rest : 
-				( button1 && !button2 ) ? increment:
-				( !button1 && button2 ) ? decrement:
-				( button1 && button2 ) ? reset : start;
+		case ledB0:
+			if(button) { 
+				state = waitRelLedB0;
+			} 
+			else {
+			       state = ledB1;
+			       ++pos;
+			}
 			break;
-		case increment:
-			state = ( !button1 && !button2 ) ? rest : 
-				( button1 && !button2) ? incWait:
-				( !button1 && button2 ) ? decrement:
-				( button1 && button2 ) ? reset : start;
+		case waitRelLedB0:
+			if(button) { 
+				state = waitRelLedB0;
+			} 
+			else {
+			       state = waitLedB0;
+			}
 			break;
-		case incWait:
-			state = ( !button1 && !button2 ) ? rest : 
-				( button1 && !button2 && timeCnt < 9 ) ? incWait:
-				( button1 && !button2 && timeCnt >= 9 ) ? increment:
-				( !button1 && button2 ) ? decrement:
-				( button1 && button2 ) ? reset : start;
-			break;	
-		case decrement:
-			state = ( !button1 && !button2 ) ? rest : 
-				( button1 && !button2 ) ? increment:
-				( !button1 && button2 ) ? decWait:
-				( button1 && button2 ) ? reset : start;
-
+		case waitLedB0:
+			if(button) {
+				state = waitRelContB0;
+			}
+			else {
+				state = waitLedB0;
+			}
 			break;
-		case decWait:
-			state = ( !button1 && !button2 ) ? rest : 
-				( button1 && !button2 ) ? increment:
-				( !button1 && button2 && timeCnt < 9) ? decWait:
-				( !button1 && button2 && timeCnt >= 9) ? decrement:
-				( button1 && button2 ) ? reset : start;
+		case waitRelContB0:
+			if(button) { 
+				state = waitRelContB0;
+			} 
+			else {
+			       state = ledB1;
+				++pos;
+			}
 			break;
-		case reset:
-			state = ( !button1 && !button2 ) ? rest : 
-				( button1 && !button2 ) ? increment:
-				( !button1 && button2 ) ? decrement:
-				( button1 && button2 ) ? reset : start;
+		case ledB1:
+			if(button) {
+				state = waitRelLedB1;
+			} 
+			else if (pos > 1) {
+				state = ledB0;
+			} 
+			else {
+				state = ledB2;
+				++pos;
+			}
+			break;
+		case waitRelLedB1:
+			if(button) { 
+				state = waitRelLedB1;
+			} 
+			else {
+			       state = waitLedB1;
+			}
+			break;		
+		case waitLedB1:
+			if(button) {
+				state = waitRelContB1;
+			}
+			else {
+				state = waitLedB1;
+			}
+			break;
+		case waitRelContB1:
+			if(button) { 
+				state = waitRelContB1;
+			} 
+			else {
+			       state = ledB2;
+				++pos;
+			}
+			break;
+		case ledB2:
+			if (button) {
+				state = waitRelLedB2;
+			} 
+			else {
+				state = ledB1;
+				++pos;
+			}
+			break;
+		case waitRelLedB2:
+			if(button) { 
+				state = waitRelLedB2;
+			} 
+			else {
+			       state = waitLedB2;
+			}
+			break;
+		case waitLedB2:
+			if(button) {
+				state = waitRelContB2;
+			}
+			else {
+				state = waitLedB2;
+			}
+			break;
+		case waitRelContB2:
+			if(button) { 
+				state = waitRelContB2;
+			} 
+			else {
+			       state = ledB1;
+				++pos;
+			}
 			break;
 		default:
 			state = start;
-			break;	
+			break;
 	}
 	switch(state) {
 		case start:
 			break;
-		case rest:
+		case ledB0:
+			pos = 0;
+			led = 0x01;
 			break;
-		case increment:
-			timeCnt = 0;
-			if (counter < 9) {
-			       counter = counter + 1;
-			}
+		case waitRelLedB0:
 			break;
-		case incWait:
-			++timeCnt;
+		case waitLedB0:
 			break;
-		case decrement:
-			timeCnt = 0;
-			if (counter > 0) {
-				counter = counter - 1;
-			}
+		case waitRelContB0:
 			break;
-		case decWait:
-			++timeCnt;
+		case ledB1:
+			led = 0x02;
 			break;
-		case reset:
-			counter = 0;
+		case waitRelLedB1:
+			break;
+		case waitLedB1:
+			break;
+		case waitRelContB1:
+			break;
+		case ledB2:
+			led = 0x04;
+			break;
+		case waitRelLedB2:
+			break;
+		case waitLedB2:
+			break;
+		case waitRelContB2:
 			break;
 	}
-	PORTB = counter;
-}
+	PORTB = led;
 
+}
 int main(void) {
 	/* Insert DDR and PORT initializations */
 	DDRB = 0xFF; 	// Set port B to output
 	PORTB = 0x00;	// Init port B to 0s
 	DDRA = 0x00;	// Set pot A to input
 	PORTA = 0xFF;	// Init port A to 1s
-	TimerSet(100);
+	TimerSet(300);
 	TimerOn();
 	state = start;	
 	/* Insert your solution below */
