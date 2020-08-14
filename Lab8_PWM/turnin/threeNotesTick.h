@@ -5,8 +5,6 @@
 
 //Timing
 
-unsigned const long PERIOD = 100;
-
 //Enumeration
 typedef enum States {start, wait, noteC, noteD, noteE } NoteStates;
 

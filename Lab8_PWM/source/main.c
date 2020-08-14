@@ -21,7 +21,7 @@ int main(void) {
     	/* Insert DDR and PORT initializations */
 	DDRA = 0x00; PORTA = 0xFF;
 	DDRB = 0xFF; PORTB = 0x00;
-	DDRC = 0xFF; PORTC = 0x00; //Debug tool for on/off
+	//DDRC = 0xFF; PORTC = 0x00; //Debug tool for on/off
 	// Timer setup
 	const unsigned long PERIOD = 100;
 	TimerSet(PERIOD);
