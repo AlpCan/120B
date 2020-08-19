@@ -14,16 +14,15 @@
 
 #include "timer.h"
 #include "pwm.h"
-#include "onofftick.h"
-#include "notes.h"
+#include "melody.h"
 
 int main(void) {
     	/* Insert DDR and PORT initializations */
 	DDRA = 0x00; PORTA = 0xFF;
 	DDRB = 0xFF; PORTB = 0x00;
-	//DDRC = 0xFF; PORTC = 0x00; //Debug tool for on/off
+	//DDRC = 0xFF; PORTC = 0x00; //Debug tool for states
 	// Timer setup
-	const unsigned long PERIOD = 100;
+	const unsigned long PERIOD = 25;
 	TimerSet(PERIOD);
 	TimerOn();
 
@@ -31,20 +30,13 @@ int main(void) {
 	PWM_on();
 	
 	//Initialize States
-	OnOffStates powerState = start;
-	NoteStates noteState = start;
+	MelodyStates melodyState = init;
 	/* Insert your solution below */
     	while (1) {
-		powerState = onOffTick(powerState);
+		melodyState = melodyTick(melodyState);
 		// Output
-		// PORTC = out;
-		if (out) {
-			noteState = notesTick(noteState);
-			set_PWM(frequency);
-		}
-		else {
-			set_PWM(0);
-		}
+		//PORTC = melodyState; //debug
+		set_PWM(frequency);
 		while (!TimerFlag) { } // wait for "period" amount of time
 		TimerFlag = 0; //Handshake
 

@@ -74,7 +74,7 @@ void TimerSet(unsigned long M) {
 
 enum States {start, ledB0, waitRelLedB0, waitLedB0, waitRelContB0, ledB1, waitRelLedB1, waitLedB1,  waitRelContB1, ledB2, waitRelLedB2, waitLedB2, waitRelContB2} state;
 void Tick() {
-	unsigned char button = PINA & 0x01;
+	unsigned char button = ~PINA & 0x01;
 	static unsigned char pos = 0; //position of led 0 - 1 - 2 - 4 - 0 is b0 - b1 - b2 - b1 -b0
 	static unsigned char led = 0;
 	switch(state) {
@@ -147,6 +147,9 @@ void Tick() {
 			if(button) { 
 				state = waitRelContB1;
 			} 
+			else if (pos > 1) {
+				state = ledB0;
+			}
 			else {
 			       state = ledB2;
 				++pos;
@@ -201,6 +204,8 @@ void Tick() {
 			break;
 		case waitLedB0:
 			break;
+		case waitRelContB0:
+			break;
 		case ledB1:
 			led = 0x02;
 			break;
@@ -208,12 +213,16 @@ void Tick() {
 			break;
 		case waitLedB1:
 			break;
+		case waitRelContB1:
+			break;
 		case ledB2:
 			led = 0x04;
 			break;
 		case waitRelLedB2:
 			break;
 		case waitLedB2:
+			break;
+		case waitRelContB2:
 			break;
 	}
 	PORTB = led;

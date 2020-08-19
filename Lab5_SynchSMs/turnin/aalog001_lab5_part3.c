@@ -75,8 +75,8 @@ void TimerSet(unsigned long M) {
 enum States {start, rest, increment, incWait, decrement, decWait, reset} state;
 // States are named relative to PB0
 void Tick (){
-	unsigned char button1 = PINA & 0x01;
-	unsigned char button2 = ( PINA & 0x02 ) >> 1;
+	unsigned char button1 = ~PINA & 0x01;
+	unsigned char button2 = ~PINA & 0x02;
 	static unsigned char counter = 7;
 	static unsigned char timeCnt = 0;
 	switch(state){

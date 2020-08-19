@@ -147,6 +147,9 @@ void Tick() {
 			if(button) { 
 				state = waitRelContB1;
 			} 
+			else if (pos > 1) {
+				state = ledB0;
+			}
 			else {
 			       state = ledB2;
 				++pos;
