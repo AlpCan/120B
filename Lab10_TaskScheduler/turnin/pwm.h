@@ -1,4 +1,3 @@
-
 // 0.954 hz is lowest frequency with this function,
 // based on settings in PWM_on()
 // Passing in 0 as frequency will stop the speaker from generating sound

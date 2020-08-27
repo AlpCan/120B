@@ -13,8 +13,8 @@ struct Task {
 	int (*TickFct) (int);
 };
 
-const unsigned short SIZE = 3;
-struct Task tasks[3];
+const unsigned short SIZE = 1;
+struct Task tasks[1];
 unsigned char taskNum = 0;
 
 void loadTask(int state, unsigned long period, int(*TickFct)(int)) {
@@ -25,6 +25,28 @@ void loadTask(int state, unsigned long period, int(*TickFct)(int)) {
 	tasks[taskNum].elapsedTime = tasks[taskNum].period = period;
 	tasks[taskNum].TickFct = TickFct;
 	++taskNum;
+}
+/* GDC */
+
+unsigned long int findGCD(unsigned long int a, unsigned long int b)
+{
+	unsigned long int c;
+	while(1){
+		c = a % b;
+		if ( c == 0 ) { return b; }
+		a = b;
+		b = c;
+	}
+	return 0;
+}	
+
+void setPeriod()
+{
+	unsigned long GCD = tasks[0].period;
+	for ( int i = 1; i <= taskNum; ++i) {
+		GCD = findGCD(GCD,tasks[i].period);
+	}
+	PERIOD = GCD;
 }
 
 /* Scheduler end */

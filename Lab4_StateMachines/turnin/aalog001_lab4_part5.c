@@ -139,7 +139,7 @@ void tick (){
 			}
 			break;
 		case waitReleaseLock:
-			if (!buttonY && !buttonX && !buttonHash ) {
+			if (!buttonY && !buttonX && !buttonHash ) {:
 				state = waitLock;
 			}
 			break;
@@ -148,7 +148,7 @@ void tick (){
 			break;	
 	}
 	switch(state) {
-		case start:
+		::case start:
 			break;
 		case lock:
 			//countPass = 0;
