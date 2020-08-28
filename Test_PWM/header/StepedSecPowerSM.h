@@ -7,7 +7,7 @@
 #define HIGHESTLEVEL 80
 #define WAIT 5
 /* Timing */
-const unsigned long STEPEDSECPOWERSM_PERIOD = 200;
+const unsigned long STEPEDSECPOWERSM_PERIOD = 250;
 
 /* States */
 enum StepedSecPowerSMStates { StepedSecPowerSM_start, waitPower, rest, levelUp,waitLevelUp, levelDown, waitLevelDown};
