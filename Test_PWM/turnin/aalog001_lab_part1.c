@@ -12,10 +12,9 @@
 #include "simAVRHeader.h"
 #endif
 
-#include "scheduler_part2.h"
+#include "scheduler_part1.h"
 #include "PCpwm.h"
-#include "onOffSM_part2.h"
-#include "StepedSecPowerSM.h"
+#include "onOffSM.h"
 
 
 int main(void) {
@@ -24,7 +23,6 @@ int main(void) {
 	DDRA = 0x00; PORTA = 0xFF;
 	/* Load Tasks */
 	loadTask(onOffSM_start,ONOFFSM_PERIOD, &onOffSM);
-	loadTask(StepedSecPowerSM_start,STEPEDSECPOWERSM_PERIOD, &StepedSecPowerSM);
 	/* Scheduler */
 	setPeriod();
 	TimerSet(PERIOD);

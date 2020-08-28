@@ -15,7 +15,7 @@
 #include "scheduler_part2.h"
 #include "PCpwm.h"
 #include "onOffSM_part2.h"
-#include "StepedSecPowerSM.h"
+#include "StepedPowerSM.h"
 
 
 int main(void) {
@@ -24,7 +24,7 @@ int main(void) {
 	DDRA = 0x00; PORTA = 0xFF;
 	/* Load Tasks */
 	loadTask(onOffSM_start,ONOFFSM_PERIOD, &onOffSM);
-	loadTask(StepedSecPowerSM_start,STEPEDSECPOWERSM_PERIOD, &StepedSecPowerSM);
+	loadTask(StepedPowerSM_start,STEPEDPOWERSM_PERIOD, &StepedPowerSM);
 	/* Scheduler */
 	setPeriod();
 	TimerSet(PERIOD);

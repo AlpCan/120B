@@ -13,8 +13,8 @@ struct Task {
 	int (*TickFct) (int);
 };
 
-const unsigned short SIZE = 2;
-struct Task tasks[2];
+const unsigned short SIZE = 1;
+struct Task tasks[1];
 unsigned char taskNum = 0;
 
 void loadTask(int state, unsigned long period, int(*TickFct)(int)) {
